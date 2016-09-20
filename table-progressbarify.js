@@ -26,8 +26,8 @@
                 args.secondaryColour = 'transparent';
             }
 
-            if(typeof args.targetColumn !== "undefined" && args.targetColumn.isNumeric() && args.targetColumn >= 0) {
-                args.targetColumn = args.targetColumn;
+            if(typeof args.targetColumn !== "undefined" && args.targetColumn >= 0) {
+                args.targetColumn = parseInt(args.targetColumn);
             }else if(typeof table.attr('data-progressbarify') !== "undefined" && table.attr('data-progressbarify') >= 0) {
                 args.targetColumn = table.attr('data-progressbarify');
             }else{
@@ -41,7 +41,7 @@
         function getColumnValues(table, targetColumn) {
             var values = [];
             $(table).find('tr').each(function() {
-                var value = $(this).children().eq(targetColumn).text();
+                var value = parseInt($(this).children().eq(targetColumn).text());
                 values.push(value);
             });
             return values;
