@@ -2,18 +2,22 @@
 
     $.fn.progressbarify = function(args) {
 
-        var table = $(this);
-        var tbody = (table.find('tbody').length > 0) ? table.find('tbody') : table;
+        $(this).each(function(e){
+            
+            var table = $(this);
+            var tbody = (table.find('tbody').length > 0) ? table.find('tbody') : table;
 
-        args = parseArgs(args);
+            args = parseArgs(args);
 
-        var values           = getColumnValues(tbody, args.targetColumn);
-        var maxValue         = getMaximumColumnValue(values);
-        var percentageValues = getPercentageValues(values, maxValue);
-        var gradients        = getPercentageBackgroundGradientValues(percentageValues, args.primaryColour, args.secondaryColour);
+            var values           = getColumnValues(tbody, args.targetColumn);
+            var maxValue         = getMaximumColumnValue(values, args.maximum);
+            var percentageValues = getPercentageValues(values, maxValue);
+            var gradients        = getPercentageBackgroundGradientValues(percentageValues, args.primaryColour, args.secondaryColour);
 
-        applyGradientBackgrounds(tbody, args.targetColumn, gradients);
+            applyGradientBackgrounds(tbody, args.targetColumn, gradients);
 
+        });
+    
         function parseArgs(args) {
 
             if(typeof args == "undefined") args = [];
@@ -24,6 +28,10 @@
 
             if(typeof args.secondaryColour == "undefined") {
                 args.secondaryColour = 'transparent';
+            }
+
+            if(typeof args.maximum == "undefined") {
+                args.maximum = false;
             }
 
             if(typeof args.targetColumn !== "undefined" && args.targetColumn >= 0) {
@@ -41,13 +49,14 @@
         function getColumnValues(table, targetColumn) {
             var values = [];
             $(table).find('tr').each(function() {
-                var value = parseInt($(this).children().eq(targetColumn).text());
+                var value = parseFloat($(this).children().eq(targetColumn).text());
                 values.push(value);
             });
             return values;
         }
 
-        function getMaximumColumnValue(values) {
+        function getMaximumColumnValue(values, maximum) {
+            if(args.maximum) return args.maximum;
             var max = 0;
             for(var i=0; i<values.length; i++) {
                 if(values[i] > max) max = values[i];
@@ -64,6 +73,7 @@
         function getPercentageBackgroundGradientValues(percentageValues, primaryColour, secondaryColour) {
             return percentageValues.map(function(percentage) {
                 percentage = Math.round(percentage);
+                if(percentage >= 100) percentage = 100;
                 return 'linear-gradient(90deg, ' + primaryColour + ' ' + percentage + '%, ' + primaryColour + ' ' + percentage + '%, ' + secondaryColour + ' ' + percentage + '%)';
             });
         }
@@ -79,3 +89,4 @@
     }
 
 })(jQuery);
+
