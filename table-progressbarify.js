@@ -7,7 +7,7 @@
             var table = $(this);
             var tbody = (table.find('tbody').length > 0) ? table.find('tbody') : table;
 
-            args = parseArgs(args);
+            args = parseArgs(table, args);
 
             var values           = getColumnValues(tbody, args.targetColumn);
             var maxValue         = getMaximumColumnValue(values, args.maximum);
@@ -18,7 +18,7 @@
 
         });
     
-        function parseArgs(args) {
+        function parseArgs(table, args) {
 
             if(typeof args == "undefined") args = [];
 
